@@ -21,7 +21,10 @@ import { TableComponent } from './../../../shared/table/table.component';
           </select>
         </div>
         <div class="form__actions">
+
+          <!-- Task: m-026 Add title="Click to fetch data" to the button element to create a tooltip -->
           <button class="button button--primary" type="submit" title="Click to fetch data">Submit</button>
+
         </div>
       </form>
 
