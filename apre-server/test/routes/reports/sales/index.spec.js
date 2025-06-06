@@ -142,4 +142,118 @@ describe('Apre Sales Report API - Sales by Region', () => {
       type: 'error'
     });
   });
+
+  // Task M-076: customer-sales endpoint tests
+  // Test the sales report API - Customer Sales
+  describe('Apre Sales Report API - Customer Sales', () => {
+    beforeEach(() => {
+    mongo.mockClear();
+  });
+
+  // Test successful response with sample data
+  it('should return customer sales data grouped by customer and salesperson', async () => {
+    mongo.mockImplementation(async (callback) => {
+      const db = {
+        collection: jest.fn().mockReturnThis(),
+        aggregate: jest.fn().mockReturnValue({
+        toArray: jest.fn().mockResolvedValue([
+          {
+            customer: 'Acme Corp',
+            salesperson: 'John Doe',
+            totalSales: 2000
+          },
+          {
+            customer: 'Beta LLC',
+            salesperson: 'Jane Smith',
+            totalSales: 3000
+          }
+        ])
+      })
+    };
+    await callback(db);
+  });
+
+  const response = await request(app).get('/api/reports/sales/customer-sales');
+
+  expect(response.status).toBe(200);
+  expect(response.body).toEqual([
+    {
+      customer: 'Acme Corp',
+      salesperson: 'John Doe',
+      totalSales: 2000
+    },
+    {
+      customer: 'Beta LLC',
+      salesperson: 'Jane Smith',
+      totalSales: 3000
+    }
+    ]);
+  });
+
+  // Test successful response with empty data
+  it('should return 200 and an empty array when no sales data exists', async () => {
+    mongo.mockImplementation(async (callback) => {
+    const db = {
+      collection: jest.fn().mockReturnThis(),
+      aggregate: jest.fn().mockReturnValue({
+      toArray: jest.fn().mockResolvedValue([])
+      })
+    };
+    await callback(db);
+  });
+
+    const response = await request(app).get('/api/reports/sales/customer-sales');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual([]);
+  });
+
+  // Test aggregation pipeline
+  it('should call aggregate with the correct pipeline', async () => {
+  const mockAggregate = jest.fn().mockReturnValue({
+    toArray: jest.fn().mockResolvedValue([])
+  });
+
+  const mockCollection = jest.fn(() => ({
+    aggregate: mockAggregate
+  }));
+
+  mongo.mockImplementation(async (callback) => {
+    const db = {
+      collection: mockCollection
+    };
+    await callback(db);
+  });
+
+  await request(app).get('/api/reports/sales/customer-sales');
+
+  expect(mockCollection).toHaveBeenCalledWith('sales');
+  expect(mockAggregate).toHaveBeenCalledWith([
+    {
+      $group: {
+        _id: {
+          customer: '$customer',
+          salesperson: '$salesperson'
+        },
+        totalSales: { $sum: '$amount' }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        customer: '$_id.customer',
+        salesperson: '$_id.salesperson',
+        totalSales: 1
+      }
+    },
+    {
+      $sort: {
+        customer: 1,
+        salesperson: 1
+      }
+    }
+  ]);
+});
+
+  });
 });
