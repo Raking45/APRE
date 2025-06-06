@@ -25,6 +25,10 @@ import { CallDurationByDateRangeComponent } from './reports/agent-performance/ca
 import { ChannelRatingByMonthComponent } from './reports/customer-feedback/channel-rating-by-month/channel-rating-by-month.component';
 import { CustomerFeedbackComponent } from './reports/customer-feedback/customer-feedback.component';
 import { SalesByRegionTabularComponent } from './reports/sales/sales-by-region-tabular/sales-by-region-tabular.component';
+// Task M-076, added on June 6, 2025
+import { SalesByCustomerAndSalespersonComponent } from './reports/sales/sales-by-customer-and-salesperson/sales-by-customer-and-salesperson.component';
+
+
 
 // Export user-management routes
 export const userManagementRoutes: Routes = [
@@ -56,6 +60,11 @@ export const salesReportRoutes: Routes = [
   {
     path: 'sales-by-region-tabular',
     component: SalesByRegionTabularComponent
+  },
+  // Task M-076, added on June 6, 2025
+  {
+    path: 'sales-by-customer-and-salesperson',
+    component: SalesByCustomerAndSalespersonComponent
   }
 ];
 
@@ -116,7 +125,7 @@ export const routes: Routes = [
         path: 'reports/customer-feedback',
         component: CustomerFeedbackComponent,
         children: customerFeedbackRoutes
-      }
+      },
     ],
     canActivate: [authGuard]
   },

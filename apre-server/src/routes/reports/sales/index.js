@@ -78,4 +78,58 @@ router.get('/regions/:region', (req, res, next) => {
   }
 });
 
+/**
+ * @description
+ *
+ * Author: Robert King
+ * Date: June 6, 2025
+ * Task: M-076
+ * 
+ * GET /customer-sales
+ *
+ * Fetches sales data grouped by customer and salesperson.
+ * This endpoint provides a report of total sales per customer, broken down by salesperson.
+ * 
+ * Example:
+ * fetch('/customer-sales')
+ *  .then(response => response.json())
+ *  .then(data => console.log(data));
+ */
+router.get('/customer-sales', (req, res, next) => {
+  try {
+    mongo(async db => {
+      const customerSalesReport = await db.collection('sales').aggregate([
+        {
+          $group: {
+            _id: {
+              customer: '$customer',
+              salesperson: '$salesperson'
+            },
+            totalSales: { $sum: '$amount' }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            customer: '$_id.customer',
+            salesperson: '$_id.salesperson',
+            totalSales: 1
+          }
+        },
+        {
+          $sort: {
+            customer: 1,
+            salesperson: 1
+          }
+        }
+      ]).toArray();
+
+      res.send(customerSalesReport);
+    }, next);
+  } catch (err) {
+    console.error('Error getting customer-sales data: ', err);
+    next(err);
+  }
+});
+
 module.exports = router;

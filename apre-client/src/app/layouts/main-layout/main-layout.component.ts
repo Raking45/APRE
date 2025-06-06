@@ -14,7 +14,7 @@ import { CookieService } from 'ngx-cookie-service';
   standalone: true,
   imports: [RouterOutlet, RouterLink],
   template: `
-   <div class="app">
+  <div class="app">
     <nav class="app__side-menu">
       <div class="app__side-menu-header">
         <h2 class="app__side-menu-title">{{ title }}</h2>
@@ -307,6 +307,8 @@ export class MainLayoutComponent {
   salesReports = [
     { name: 'Sales by Region', url: '/reports/sales/sales-by-region' },
     { name: 'Sales by Region - Tabular', url: '/reports/sales/sales-by-region-tabular' },
+    // Task: M-076, added on June 6, 2024
+    { name: 'Sales by Customer & Salesperson', url: '/reports/sales/sales-by-customer-and-salesperson'},
     // Add more reports as needed
   ];
 
