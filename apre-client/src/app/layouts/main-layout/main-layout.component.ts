@@ -313,8 +313,10 @@ export class MainLayoutComponent {
   ];
 
   agentPerformanceReports = [
-    { name: 'Call Duration by Date Range', url: '/reports/agent-performance/call-duration-by-date-range' }
+    { name: 'Call Duration by Date Range', url: '/reports/agent-performance/call-duration-by-date-range' },
     // Add more reports as needed
+    // Task: M-096, added on June 12, 2025
+    { name: 'Data by Resolution Time and Month', url: '/reports/agent-performance/data-by-resolution-time-and-month'}
   ];
 
   customerFeedbackReports = [

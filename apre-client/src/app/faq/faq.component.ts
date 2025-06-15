@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   template: `
-     <div class="faq">
+    <div class="faq">
       <h2 class="faq__title">Frequently Asked Questions</h2>
       <p class="faq__description">Here are some common questions and answers about the report tool:</p>
 

@@ -72,4 +72,97 @@ describe('Apre Agent Performance API', () => {
       type: 'error'
     });
   });
+
+  // Test 1: GET/agent-names should return a sorted list of agents
+  it('should fetch and return a sorted list of agents', async () => {
+    mongo.mockImplementation(async (callback) => {
+      const db = {
+        collection: jest.fn().mockReturnThis(),
+        aggregate: jest.fn().mockReturnValue({
+          toArray: jest.fn().mockResolvedValue([
+            { agentId: 1, name: 'Alice' },
+            { agentId: 2, name: 'Bob' }
+          ])
+        })
+      };
+      await callback(db);
+    });
+    const response = await request(app).get('/api/reports/agent-performance/agent-names');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      agents: [
+        { agentId: 1, name: 'Alice' },
+        { agentId: 2, name: 'Bob' }
+      ]
+    });
+  });
+
+  // Test 2: GET /resolution-time-by-month should return resolution data for a valid agent
+  it('should return resolution data for a valid agent name', async () => {
+    mongo.mockImplementation(async(callback) => {
+      const db = {
+        collection: jest.fn((name) => {
+          if (name === 'agents') {
+            return {
+              findOne: jest.fn().mockResolvedValue({ name: 'Alice', agentId: 123 })
+            };
+          }
+          if (name === 'agentPerformance') {
+            return {
+              aggregate: jest.fn().mockReturnValue({
+                toArray: jest.fn().mockResolvedValue([
+                  {
+                    results: [
+                      {
+                        agent: 'Alice',
+                        month: 1,
+                        year: 2023,
+                        avgResolutionTime: 35.5
+                      }
+                    ]
+                  }
+                ])
+              })
+            };
+          }
+        })
+      };
+      await callback(db);
+    });
+    const response = await request(app).get('/api/reports/agent-performance/resolution-time-by-month?agentName=Alice');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      results: [
+        {
+          agent: 'Alice',
+          month: 1,
+          year: 2023,
+          avgResolutionTime: 35.5
+        }
+      ]
+    });
+  });
+
+  // Test 3: GET /resolution-time-by-month should return 404 if agent is not found
+  it('should return 404 if agent is not found', async () => {
+    mongo.mockImplementation(async (callback) => {
+      const db = {
+        collection: jest.fn(() => ({
+          findOne: jest.fn().mockResolvedValue(null)
+        }))
+      };
+      await callback(db);
+    });
+    const response = await request(app).get('/api/reports/agent-performance/resolution-time-by-month?agentName=NonExistent');
+
+    expect(response.status).toBe(404);
+    expect(response.body).toEqual({
+      message: 'Agent "NonExistent" not found',
+      status: 404,
+      type: 'error'
+    });
+  });
+
 });

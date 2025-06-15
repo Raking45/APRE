@@ -27,6 +27,8 @@ import { CustomerFeedbackComponent } from './reports/customer-feedback/customer-
 import { SalesByRegionTabularComponent } from './reports/sales/sales-by-region-tabular/sales-by-region-tabular.component';
 // Task M-076, added on June 6, 2025
 import { SalesByCustomerAndSalespersonComponent } from './reports/sales/sales-by-customer-and-salesperson/sales-by-customer-and-salesperson.component';
+// Task M-096, added on June 12, 2025
+import { DataByResolutionTimeAndMonthComponent } from './reports/agent-performance/data-by-resolution-time-and-month/data-by-resolution-time-and-month.component';
 
 
 
@@ -73,6 +75,11 @@ export const agentPerformanceRoutes: Routes = [
   {
     path: 'call-duration-by-date-range',
     component: CallDurationByDateRangeComponent
+  },
+  // Task M-096, added on June 12, 2025
+  {
+    path: 'data-by-resolution-time-and-month',
+    component: DataByResolutionTimeAndMonthComponent
   }
 ];
 

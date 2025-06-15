@@ -20,16 +20,26 @@ import { CookieService } from 'ngx-cookie-service';
 
       <form [formGroup]="signinForm" (ngSubmit)="signin();" class="signin__form">
         <div class="signin__form-group">
-          <label for="username" class="signin__label">Username</label>
-          <input id="username" formControlName="username" type="text" class="signin__input" />
+
+          <!-- Task m-031: Add red asterisk to username label & required field indicator 6/10/2025 -->
+          <label for="username" class="signin__label">Username <span class="asterisk">*</span></label>
+          <!-- Task m-028: Add a placeholder to username input placeholder="Enter your username" 6/10/2025 -->
+          <input id="username" formControlName="username" type="text" class="signin__input" placeholder="Enter your username" required />
         </div>
+
         <div class="signin__form-group">
-          <label for="password" class="signin__label">Password</label>
-          <input id="password" formControlName="password" type="password" class="signin__input" />
+          <!-- Task m-032: Add red asterisk to password label & required field indicator 6/10/2025 -->
+          <label for="password" class="signin__label">Password <span class="asterisk">*</span></label>
+          <!-- Task m-029: Add a placeholder to password input placeholder="Enter your password" 6/10/2025 -->
+          <input id="password" formControlName="password" type="password" class="signin__input" placeholder="Enter your password" required />
         </div>
-        <input type="submit" class="signin__button" Value="Submit" />
+
+        <!-- Task m-030: Add a tooltip to submit button with text "Click to sign in" 6/10/2025
+        Task m-033: Modify the submit button text to Sign in 6/10/2025 -->
+        <input type="submit" class="signin__button" Value="Sign in" title="Click to sign in" />
       </form>
       <a href="/" class="signin__return-link">Return to Home</a>
+      <p class="info"><span class="asterisk">*</span> Indicates a required field</p> 
     </div>
   `,
   styles: `
@@ -59,6 +69,17 @@ import { CookieService } from 'ngx-cookie-service';
 
     .signin__label {
       margin-bottom: 5px;
+    }
+
+    /* Task m-031 added on 6/10/2025 */
+    .signin__label .asterisk,
+    p .asterisk {
+      color: red; /* Red asterisk for required field */
+    }
+
+    /* Task m-031 (This was not required but implemented for UX/UI clarity) */
+    .info {
+      text-align: center;
     }
 
     .signin__input {
